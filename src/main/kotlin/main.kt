@@ -25,7 +25,7 @@ class Persona(val nombreCompleto : NombreCompleto, val mascota: Mascota){
 
 
     override fun toString(): String {
-        
+
         return "Soy ${nombreCompleto.nombre}, con DNI $dni y "
     }
 
