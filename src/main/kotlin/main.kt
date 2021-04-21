@@ -3,10 +3,15 @@ fun main() {
     var apellido : String?
     var resp : Char?
     var auxResp : String?
+    val charAux : Int = (97..122).random()
 
     var nombreMascota : String?
     var especie : String?
-    val numeroChip : Int?
+    var numeroChip : Int?
+    var cantidadMascotas : Int
+
+    var mascota : Mascota?
+    val listaMascotas : List<Mascota>?
 
     print("Introducir nombre: ")
     do{ nombre = readLine() }while (nombre.isNullOrEmpty())
@@ -16,7 +21,7 @@ fun main() {
 
     val nombreCompleto = NombreCompleto(nombre, apellido)
 
-    print("¿Tiene mascota?(S/N)")
+    print("¿Tiene alguna mascota?(S/N)")
     do{
         do{
             auxResp = readLine()
@@ -25,30 +30,38 @@ fun main() {
     }while (resp != 'S' && resp != 'N')
 
 
-    val mascota = if (resp == 'N') null else {
-        print("Introducir nombre de la mascota: ")
-        do{ nombreMascota = readLine() }while (nombreMascota.isNullOrEmpty())
+    if (resp == 'S'){
+        listaMascotas = mutableListOf()
+        println("¿Cuantas mascotas tiene?")
+        do{
+            do{
+                auxResp = readLine()
+            }while (auxResp?.toInt() == null)
+            cantidadMascotas = auxResp.toInt()
+        }while (cantidadMascotas < 1)
 
-        print("Introducir especie: ")
-        do{ especie = readLine() }while (especie.isNullOrEmpty())
+        for(i in 1..cantidadMascotas) {
+            print("Introducir nombre de la mascota: ")
+            do {nombreMascota = readLine()} while (nombreMascota.isNullOrEmpty())
+            print("Introducir especie: ")
+            do {especie = readLine()} while (especie.isNullOrEmpty())
 
-        numeroChip = (0..10000).random()
-        print("Su número de chip es: $numeroChip\n")
-
-        Mascota(nombreMascota, especie, numeroChip)
+            numeroChip = (0..10000).random()
+            print("Su número de chip es: $numeroChip\n")
+            mascota =  Mascota(nombreMascota, especie, numeroChip)
+	        listaMascotas.add(mascota)
+        }
     }
 
-    val persona = Persona(nombreCompleto, mascota)
+    val persona = Persona(nombreCompleto, listaMascotas)
 
-    if(persona.mascota != null)
+    if(persona.listaMascota != null)
         println("${persona.nombreCompleto} si tiene una mascota con los siguientes datos: ${persona.mascota}")
     else
         println("${persona.nombreCompleto} no tiene una mascota")
 
-
-    persona.setDni("11231121H")
-
-
+    persona.setDni((10000000..99999999).random().toString()+charAux.toChar())
+    println(persona.getDni())
 
 }
 
@@ -58,9 +71,13 @@ class NombreCompleto(var nombre : String, var apellido : String){
     }
 }
 
-class Persona(val nombreCompleto : NombreCompleto, val mascota: Mascota?){
-    private var edad = 18
+class Persona(val nombreCompleto : NombreCompleto, val listaMascota: MutableList<Mascota>){
+    private var edad = 18 //no lo utilizo
     private var dni : String? = null
+
+    fun getDni() : String?{
+        return dni
+    }
 
     fun setDni(dni: String) {
         if(dni.length == 9 && dni[dni.length-1].isLetter())
