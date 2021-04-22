@@ -11,7 +11,7 @@ fun main() {
     var cantidadMascotas : Int
 
     var mascota : Mascota?
-    val listaMascotas : List<Mascota>?
+    val listaMascotas = mutableListOf<Mascota>()
 
     print("Introducir nombre: ")
     do{ nombre = readLine() }while (nombre.isNullOrEmpty())
@@ -23,20 +23,14 @@ fun main() {
 
     print("¿Tiene alguna mascota?(S/N)")
     do{
-        do{
-            auxResp = readLine()
-        }while (auxResp.isNullOrEmpty())
+        do{ auxResp = readLine() }while (auxResp.isNullOrEmpty())
         resp = auxResp[0].toUpperCase()
     }while (resp != 'S' && resp != 'N')
 
-
     if (resp == 'S'){
-        listaMascotas = mutableListOf()
         println("¿Cuantas mascotas tiene?")
         do{
-            do{
-                auxResp = readLine()
-            }while (auxResp?.toInt() == null)
+            do{ auxResp = readLine() }while (auxResp?.toInt() == null)
             cantidadMascotas = auxResp.toInt()
         }while (cantidadMascotas < 1)
 
@@ -49,35 +43,39 @@ fun main() {
             numeroChip = (0..10000).random()
             print("Su número de chip es: $numeroChip\n")
             mascota =  Mascota(nombreMascota, especie, numeroChip)
-	        listaMascotas.add(mascota)
+
+            listaMascotas.add(mascota)
+
+
         }
     }
 
     val persona = Persona(nombreCompleto, listaMascotas)
-
-    if(persona.listaMascota != null)
-        println("${persona.nombreCompleto} si tiene una mascota con los siguientes datos: ${persona.mascota}")
-    else
-        println("${persona.nombreCompleto} no tiene una mascota")
-
     persona.setDni((10000000..99999999).random().toString()+charAux.toChar())
-    println(persona.getDni())
 
+    if(persona.listaMascota != null) {
+        print("${persona.nombreCompleto}")
+        if(persona.listaMascota.size == 1)
+            println(" tiene una mascota con los siguientes datos: ${persona.listaMascota.first()}")
+        else{
+            println(" tiene varias mascotas con los siguientes datos: ")
+            persona.listaMascota.forEach {
+                println("$it")
+            }
+        }
+    }else
+        println("${persona.nombreCompleto} no tiene una mascota")
 }
 
 class NombreCompleto(var nombre : String, var apellido : String){
-    override fun toString(): String {
-        return "$nombre $apellido"
-    }
+    override fun toString(): String { return "$nombre $apellido" }
 }
 
-class Persona(val nombreCompleto : NombreCompleto, val listaMascota: MutableList<Mascota>){
+class Persona(val nombreCompleto : NombreCompleto, val listaMascota: MutableList<Mascota>?){
     private var edad = 18 //no lo utilizo
     private var dni : String? = null
 
-    fun getDni() : String?{
-        return dni
-    }
+    fun getDni() : String?{ return dni }
 
     fun setDni(dni: String) {
         if(dni.length == 9 && dni[dni.length-1].isLetter())
@@ -86,17 +84,13 @@ class Persona(val nombreCompleto : NombreCompleto, val listaMascota: MutableList
             println("El dni no se modifico, debe tener 8 digitos y acabar por una letra")
     }
 
-    override fun toString(): String {
-        return "Soy ${nombreCompleto.nombre} ${nombreCompleto.apellido}, con DNI $dni y $edad años."
-    }
+    override fun toString(): String { return "Soy ${nombreCompleto.nombre} ${nombreCompleto.apellido}, con DNI $dni y $edad años." }
 }
 
 //una persona tiene 1 o ninguna mascota. La mascota tiene nombre, pertenece a una especie y tiene un número de chip
 
 class Mascota(private var nombreMascota: String?, private var especie: String?, private var numeroChip: Int?){
-    override fun toString(): String {
-        return "Nombre de mascota: $nombreMascota \nEspecie: $especie\nNúmero de chip: $numeroChip"
-    }
+    override fun toString(): String { return "Nombre de mascota: $nombreMascota \nEspecie: $especie\nNúmero de chip: $numeroChip" }
 }
 
 
