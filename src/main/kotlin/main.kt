@@ -1,3 +1,5 @@
+import java.lang.NumberFormatException
+
 fun main() {
     var nombre : String?
     var apellido : String?
@@ -8,7 +10,7 @@ fun main() {
     var nombreMascota : String?
     var especie : String?
     var numeroChip : Int?
-    var cantidadMascotas : Int
+    var cantidadMascotas : Int?
 
     var mascota : Mascota?
     val listaMascotas = mutableListOf<Mascota>()
@@ -29,10 +31,13 @@ fun main() {
 
     if (resp == 'S'){
         println("¿Cuantas mascotas tiene?")
-        do{
-            do{ auxResp = readLine() }while (auxResp?.toInt() == null)
-            cantidadMascotas = auxResp.toInt()
-        }while (cantidadMascotas < 1)
+            do{
+                auxResp = readLine()
+                cantidadMascotas = try{
+                    auxResp?.toInt()
+                } catch (e : NumberFormatException) { -1 }
+            }while (cantidadMascotas == null || cantidadMascotas < 1)
+
 
         for(i in 1..cantidadMascotas) {
             print("Introducir nombre de la mascota: ")
@@ -56,7 +61,7 @@ fun main() {
     if(persona.listaMascota != null) {
         print("${persona.nombreCompleto}")
         if(persona.listaMascota.size == 1)
-            println(" tiene una mascota con los siguientes datos: ${persona.listaMascota.first()}")
+            println(" tiene una mascota con los siguientes datos: \n${persona.listaMascota.first()}")
         else{
             println(" tiene varias mascotas con los siguientes datos: ")
             persona.listaMascota.forEach {
@@ -86,8 +91,6 @@ class Persona(val nombreCompleto : NombreCompleto, val listaMascota: MutableList
 
     override fun toString(): String { return "Soy ${nombreCompleto.nombre} ${nombreCompleto.apellido}, con DNI $dni y $edad años." }
 }
-
-//una persona tiene 1 o ninguna mascota. La mascota tiene nombre, pertenece a una especie y tiene un número de chip
 
 class Mascota(private var nombreMascota: String?, private var especie: String?, private var numeroChip: Int?){
     override fun toString(): String { return "Nombre de mascota: $nombreMascota \nEspecie: $especie\nNúmero de chip: $numeroChip" }
